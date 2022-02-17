@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# CS0649: Field 'MagazinOnlineContext.MarketCap' is never assigned to, and will always have its default value null
+dotnet_diagnostic.CS0649.severity = none
+
+# IDE0055: Fix formatting
+dotnet_diagnostic.IDE0055.severity = none
