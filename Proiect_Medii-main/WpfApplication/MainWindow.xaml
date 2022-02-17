@@ -1,0 +1,202 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApplication"
+        xmlns:AutoLotModel="clr-namespace:AutoLotModel;assembly=AutoLotModel" x:Class="WpfApplication.MainWindow"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="620.4" Width="879.6" Loaded="Window_Loaded">
+    <Window.Resources>
+        <CollectionViewSource x:Key="employeeViewSource" d:DesignSource="{d:DesignInstance {x:Type AutoLotModel:Employee}, CreateList=True}"/>
+        <CollectionViewSource x:Key="timetrackingViewSource" d:DesignSource="{d:DesignInstance {x:Type AutoLotModel:Timetracking}, CreateList=True}"/>
+        <CollectionViewSource x:Key="employeeClockingsViewSource" Source="{Binding Clockings, Source={StaticResource employeeViewSource}}"/>
+        <ControlTemplate x:Key="validationTemplate">
+            <DockPanel>
+                <TextBlock Foreground="Red" FontSize="20">!</TextBlock>
+                <AdornedElementPlaceholder/>
+            </DockPanel>
+        </ControlTemplate>
+        <Style x:Key="textBoxInError" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+ Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+ Path=(Validation.Errors)/ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <TabControl x:Name="tbCtrlAutoLot" HorizontalAlignment="Left" Height="519" Margin="105,71,0,0" VerticalAlignment="Top" Width="764">
+            <TabItem Header="Employee">
+                <Grid Background="#FFE5E5E5" DataContext="{StaticResource employeeViewSource}" Margin="0,-5,0.6,5.2">
+                    <Grid x:Name="grid1" HorizontalAlignment="Left" Margin="220,238,0,0" VerticalAlignment="Top" Height="137" Width="210">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="105.4"/>
+                            <ColumnDefinition Width="21.8"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Label Content="Emp Id:" Grid.Column="0" HorizontalAlignment="Left" Margin="3,4,0,3.8" Grid.Row="0" VerticalAlignment="Center" IsEnabled="False"/>
+                        <TextBox x:Name="empIdTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="2.8,5,0,4.8" Grid.Row="0" Text="{Binding EmpId, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120" Grid.ColumnSpan="2" IsEnabled="False"/>
+                        <Label Content="Firstname:" Grid.Column="0" HorizontalAlignment="Left" Margin="3,3.2,0,3.6" Grid.Row="1" VerticalAlignment="Center"/>
+                        <TextBox x:Name="firstnameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="2.8,5.2,0,4.6" Grid.Row="1" Text="{Binding Firstname, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120" Grid.ColumnSpan="2" Validation.ErrorTemplate="{StaticResource validationTemplate}"
+Style="{StaticResource textBoxInError}"/>
+                        <Label Content="Lastname:" Grid.Column="0"  HorizontalAlignment="Left" Margin="3,3.4,0,3.4" Grid.Row="2" VerticalAlignment="Center"/>
+                        <TextBox x:Name="lastnameTextBox" Grid.Column="1" Validation.ErrorTemplate="{StaticResource validationTemplate}"
+Style="{StaticResource textBoxInError}" HorizontalAlignment="Left" Height="24" Margin="2.8,4.4,0,4.4" Grid.Row="2" Text="{Binding Lastname, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120" Grid.ColumnSpan="2"/>
+                        <Label Content="Phone:" Grid.Column="0" HorizontalAlignment="Left" Margin="3,3.6,0,3.2" Grid.Row="3" VerticalAlignment="Center"/>
+                        <TextBox x:Name="phoneTextBox" Validation.ErrorTemplate="{StaticResource validationTemplate}"
+Style="{StaticResource textBoxInError}" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="2.8,4.6,0,5.2" Grid.Row="3" Text="{Binding Phone, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120" Grid.ColumnSpan="2"/>
+                    </Grid>
+                    <Button x:Name="btnPrevEmp" Content="Previous" HorizontalAlignment="Left" Margin="220,185,0,0" VerticalAlignment="Top" Width="75" Click="btnPreviousEmp_Click"/>
+                    <Button x:Name="btnNextEmp" Content="Next" HorizontalAlignment="Left" Margin="556,185,0,0" VerticalAlignment="Top" Width="75" Click="btnNextEmp_Click"/>
+                    <DataGrid x:Name="employeeDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding}" Margin="220,38,126.8,311" RowDetailsVisibilityMode="VisibleWhenSelected">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn x:Name="empIdColumn" Binding="{Binding EmpId}" Header="Emp Id" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="firstnameColumn" Binding="{Binding Firstname}" Header="Firstname" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="lastnameColumn" Binding="{Binding Lastname}" Header="Lastname" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="phoneColumn" Binding="{Binding Phone}" Header="Phone" Width="SizeToHeader"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button x:Name="btnDeleteEmp" Content="Delete"  VerticalAlignment="Top" Click="btnDeleteEmp_Click"   Margin="475,356,207.8,0" RenderTransformOrigin="3.929,0.875"/>
+                    <Button x:Name="btnNewEmp" Content="New" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75" Click="btnNewEmp_Click" Margin="475,293,0,0" />
+                    <Button x:Name="btnSaveEmp" Content="Save" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75"  Click="btnSaveEmp_Click" Margin="475,243,0,0" IsEnabled="True" >
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="IsEnabled" Value="false" />
+                                <Style.Triggers>
+                                    <!--Butonul Save va fi inactiv daca exista erori de validare -->
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding (Validation.HasError), ElementName=lastNameTextBox}" Value="false" />
+                                            <Condition Binding="{Binding (Validation.HasError), ElementName=firstNameTextBox}" Value="false" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="IsEnabled" Value="true" />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Timetracking">
+                <Grid Background="#FFE5E5E5" DataContext="{StaticResource timetrackingViewSource}" Margin="0,0,12.2,15.2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="19*"/>
+                        <ColumnDefinition Width="727*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid x:Name="grid2" HorizontalAlignment="Left" Margin="173.7,309,0,0" VerticalAlignment="Top" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Label Content="Hour:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0" VerticalAlignment="Center"/>
+                        <TextBox x:Name="hourTextBox" Validation.ErrorTemplate="{StaticResource validationTemplate}"
+Style="{StaticResource textBoxInError}" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="0" Text="{Binding Hour, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                        <Label Content="Month:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1" VerticalAlignment="Center"/>
+                        <TextBox x:Name="monthTextBox" Validation.ErrorTemplate="{StaticResource validationTemplate}"
+Style="{StaticResource textBoxInError}" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="1" Text="{Binding Month, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                        <Label Content="Salary:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2" VerticalAlignment="Center"/>
+                        <TextBox x:Name="salaryTextBox" Validation.ErrorTemplate="{StaticResource validationTemplate}"
+Style="{StaticResource textBoxInError}" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="2" Text="{Binding Salary, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                        <Label Content="Time Id:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3" VerticalAlignment="Center"/>
+                        <TextBox x:Name="timeIdTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="3" Text="{Binding TimeId, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120" IsEnabled="False"/>
+                    </Grid>
+                    <Button x:Name="btnPrevTime" Content="Previous" HorizontalAlignment="Left" Margin="180.7,227,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1" RenderTransformOrigin="0.567,-2.375" Click="btnPreviousTime_Click"/>
+                    <Button x:Name="bfnNextTime" Content="Next" HorizontalAlignment="Left" Margin="409.7,222,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-1.337,0.688" Grid.Column="1" Click="btnNextTime_Click"/>
+                    <DataGrid x:Name="timetrackingDataGrid" AutoGenerateColumns="False" Grid.Column="1" EnableRowVirtualization="True" ItemsSource="{Binding}" Margin="173.8,96,242.4,259" RowDetailsVisibilityMode="VisibleWhenSelected">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn x:Name="hourColumn" Binding="{Binding Hour}" Header="Hour" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="monthColumn" Binding="{Binding Month}" Header="Month" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="salaryColumn" Binding="{Binding Salary}" Header="Salary" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="timeIdColumn" Binding="{Binding TimeId}" Header="Time Id" Width="SizeToHeader"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button x:Name="btnDeleteTime" Content="Delete" Grid.Column="1" HorizontalAlignment="Left" Margin="422.8,364,0,0" VerticalAlignment="Top" Width="75" Click="btnDeleteTime_Click"/>
+                    <Button x:Name="btnNewTime" Content="New" Grid.Column="1" HorizontalAlignment="Left" Margin="422.8,312,0,0" VerticalAlignment="Top" Width="75" Click="btnNewTime_Click"/>
+                    <Button x:Name="btnSaveTime" Content="Save" Grid.Column="1" HorizontalAlignment="Left" Margin="422.8,418,0,0" VerticalAlignment="Top" Width="76" Click="btnSaveTime_Click"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Clocking">
+                <Grid Background="#FFE5E5E5" DataContext="{StaticResource employeeClockingsViewSource}">
+                    <ComboBox x:Name="cmbTimetracking"   ItemsSource="{Binding Source={StaticResource timetrackingViewSource}}" Margin="426,66,145.4,403.2" SelectedValue="{Binding
+ElementName=clockingsDataGrid,Path=SelectedItem.TimeId,Mode=OneWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} - {1}"> 
+                                            <Binding Path="Hour"/>
+                                            <Binding Path="Month"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox x:Name="cmbEmployee"   ItemsSource="{Binding}" Margin="33,66,545.4,403.2" SelectedValue="{Binding ElementName=clockingsDataGrid,Path=SelectedItem.EmpId,Mode=OneWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} {1}">
+                                            <Binding Path="Firstname"/>
+                                            <Binding Path="Lastname"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    
+                    
+                    </ComboBox>
+                    <Label Content="Employee" HorizontalAlignment="Left" Margin="89,39,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Width="119">
+                        <Label.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="-0.666"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Label.RenderTransform>
+                    </Label>
+                    <Label Content="Timetracking" HorizontalAlignment="Left" Margin="479,40,0,0" VerticalAlignment="Top" Width="86"/>
+                    <DataGrid x:Name="clockingsDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding}"
+RowDetailsVisibilityMode="VisibleWhenSelected" IsSynchronizedWithCurrentItem="True" Margin="10,126,440.4,218.2"   >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn x:Name="FirstnameColumn" Binding="{Binding Firstname}"
+Header="First Name" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="LastnameColumn" Binding="{Binding Lastname}"
+Header="Last Name" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="HourColumn" Binding="{Binding Hour}"
+Header="Hour" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="MonthColumn" Binding="{Binding Month}"
+Header="Month" Width="SizeToHeader"/>
+                            <DataGridTextColumn x:Name="SalaryColumn" Binding="{Binding Salary}"
+Header="Salary" Width="SizeToHeader"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button x:Name="btnNewClock" Content="New" HorizontalAlignment="Left" Margin="390,145,0,0" VerticalAlignment="Top" Width="75" Click="newClockings"/>
+                    <Button x:Name="btnDelClock" Content="Delete" HorizontalAlignment="Left" Margin="390,193,0,0" VerticalAlignment="Top" Width="75" Click="DeleteClockings"/>
+                    <Button x:Name="btnSaveClock" Content="Save" HorizontalAlignment="Left" Margin="390,254,0,0" VerticalAlignment="Top" Width="75" Click="saveClockings"/>
+                    <Button x:Name="btnPrevClock" Content="Previous" HorizontalAlignment="Left" Margin="10,278,0,0" VerticalAlignment="Top" Width="75" Click="btnPreviousClock_Click"/>
+                    <Button x:Name="btnNextClock" Content="Next" HorizontalAlignment="Left" Margin="243,278,0,0" VerticalAlignment="Top" Width="75" Click="btnNextClock_Click"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>
