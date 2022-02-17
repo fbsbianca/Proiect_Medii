@@ -1,0 +1,42 @@
+﻿@page
+@model MagazinOnline.Pages.CryptoMarketCaps.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CryptoMarketCap[0].Cryptocurrency)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CryptoMarketCap[0].MarketCap)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.CryptoMarketCap) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cryptocurrency.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MarketCap.ID)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

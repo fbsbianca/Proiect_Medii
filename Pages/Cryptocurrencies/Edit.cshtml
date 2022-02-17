@@ -1,0 +1,87 @@
+﻿@page
+@model MagazinOnline.Pages.Cryptocurrencies.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Cryptocurrency</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Cryptocurrency.ID" />
+            <div class="form-group">
+                <label asp-for="Cryptocurrency.Name" class="control-label"></label>
+                <input asp-for="Cryptocurrency.Name" class="form-control" />
+                <span asp-validation-for="Cryptocurrency.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cryptocurrency.Code" class="control-label"></label>
+                <input asp-for="Cryptocurrency.Code" class="form-control" />
+                <span asp-validation-for="Cryptocurrency.Code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cryptocurrency.Price" class="control-label"></label>
+                <input asp-for="Cryptocurrency.Price" class="form-control" />
+                <span asp-validation-for="Cryptocurrency.Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Cryptocurrency.SellerID" class="control-label">Seller Name</label>
+                <select asp-for="Cryptocurrency.SellerID" class="form-control" asp-items="ViewBag.SellerID">  </select>
+                <span asp-validation-for="Cryptocurrency.SellerID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="table">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+
+                                foreach (var cat in Model.AssignedCategoryDataList)
+                                {
+                                    if (cnt++ % 3 == 0)
+                                    {
+                                    @:</tr><tr>
+                                    }
+
+                                    @: <td>
+                                        <input type="checkbox"
+                                               name="selectedMarketCaps"
+                                               value="@cat.MarketCapID"
+                                               @(Html.Raw(cat.Assigned ? "checked=\"checked\"" : "")) />
+
+                                        @cat.MarketCapID @:   @cat.Name
+
+
+
+
+                                    @:</td>
+                                }
+                            @:</tr>
+                            }
+                        </table>
+                    </div>
+            </div>
+
+            <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+
+
+            </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
